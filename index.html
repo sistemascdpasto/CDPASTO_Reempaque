@@ -424,7 +424,7 @@ document.getElementById('btnShowProc').addEventListener('click', showPresentatio
 function makeZoneBandsPlugin(){
   return { id:'zoneBands', beforeDraw(c){
     const { ctx, chartArea:{left,right}, scales:{y} } = c; if(!y) return;
-    const bands = [[0,ZONES.red,'rgba(224,57,43,.16)'],[ZONES.red,ZONES.green,'rgba(242,183,5,.16)'],[ZONES.green,ZONES.max,'rgba(47,158,68,.16)']];
+    const bands = [[0,ZONES.red,'rgba(240,62,48,.34)'],[ZONES.red,ZONES.green,'rgba(255,196,0,.30)'],[ZONES.green,ZONES.max,'rgba(52,190,82,.32)']];
     ctx.save();
     bands.forEach(([from,to,color]) => {
       const yFrom = y.getPixelForValue(from), yTo = y.getPixelForValue(to);
@@ -437,8 +437,9 @@ const valueLabelsPlugin = { id:'valueLabels', afterDatasetsDraw(c){
   const { ctx } = c;
   c.getDatasetMeta(0).data.forEach((pt,i) => {
     const v = c.data.datasets[0].data[i]; if(v === null || v === undefined) return;
-    ctx.save(); ctx.fillStyle = '#edf1f6'; ctx.font = "700 10px 'JetBrains Mono', monospace"; ctx.textAlign = 'center';
-    ctx.fillText(v, pt.x, pt.y - 9); ctx.restore();
+    ctx.save(); ctx.font = "700 11px 'JetBrains Mono', monospace"; ctx.textAlign = 'center';
+    ctx.lineWidth = 3; ctx.strokeStyle = '#0c0f13'; ctx.lineJoin = 'round'; ctx.strokeText(v, pt.x, pt.y - 10);
+    ctx.fillStyle = '#ffffff'; ctx.fillText(v, pt.x, pt.y - 10); ctx.restore();
   });
 }};
 function buildSeries(ws){
@@ -452,9 +453,9 @@ function initChart(canvasId, ws){
   const ctx = document.getElementById(canvasId).getContext('2d');
   return new Chart(ctx, {
     type:'line',
-    data:{ labels: HOURS.map(h=>`${h}:00`), datasets:[{ data: buildSeries(ws), borderColor:'#edf1f6', backgroundColor:'#edf1f6', pointBackgroundColor:'#0c0f13', pointBorderColor:'#edf1f6', pointRadius:3, pointHoverRadius:5, borderWidth:2, spanGaps:true, tension:.15 }] },
+    data:{ labels: HOURS.map(h=>`${h}:00`), datasets:[{ data: buildSeries(ws), borderColor:'#ffffff', backgroundColor:'#ffffff', pointBackgroundColor:'#ffffff', pointBorderColor:'#0c0f13', pointBorderWidth:2, pointRadius:4, pointHoverRadius:6, borderWidth:3, spanGaps:true, tension:.15 }] },
     options:{ responsive:true, maintainAspectRatio:false, animation:{duration:300},
-      scales:{ y:{min:0,max:ZONES.max,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#8996a6',font:{size:9}}}, x:{grid:{display:false},ticks:{color:'#8996a6',font:{size:9}}} },
+      scales:{ y:{min:0,max:ZONES.max,grid:{color:'rgba(255,255,255,.14)'},ticks:{color:'#c3ccd7',font:{size:10}}}, x:{grid:{display:false},ticks:{color:'#c3ccd7',font:{size:10}}} },
       plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(c)=>`${c.raw} C/H`}} } },
     plugins:[makeZoneBandsPlugin(), valueLabelsPlugin]
   });
